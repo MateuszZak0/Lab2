@@ -1,5 +1,6 @@
 package pl.lublin.wsei.java.cwiczenia;
 
+import javafx.application.HostServices;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,12 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import java.io.File;
 
 public class HelloController {
 
     public Label lbFile;
-
+    private Infografika selInfografika;
 
 
     FileChooser fileChooser = new FileChooser();
@@ -31,6 +34,7 @@ public class HelloController {
     public Button btnPrzejdzDoStrony;
     public TextField txtAdresStrony;
     public ImageView imgMiniaturka;
+
     @FXML
     public void initialize()
     {
@@ -44,19 +48,22 @@ public class HelloController {
                         int index = new_val.intValue();
                         if (index != -1)
                         {
-                            txtAdresStrony.setText(igList.infografiki.get(index).adresStrony);
-                            Image image = new Image(igList.infografiki.get(index).adresMiniaturki);
+                            selInfografika = igList.infografiki.get(index);
+                            txtAdresStrony.setText(selInfografika.adresStrony);
+                            Image image = new Image(selInfografika.adresMiniaturki);
                             imgMiniaturka.setImage(image);
                         }
                         else
                         {
                             txtAdresStrony.setText("");
                             imgMiniaturka.setImage(null);
+                            selInfografika = null;
                         }
                     }
                 }
         );
     }
+
     public void btnOpenFileAction(ActionEvent actionEvent) {
         File file = fileChooser.showOpenDialog(null);
         if(file != null){
@@ -68,5 +75,22 @@ public class HelloController {
         else{
             lbFile.setText("Prosze wczytac plik ...");
         }
+    }
+
+
+ private Stage stage;
+         private HostServices hostServices;
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage =stage;
+    }
+
+    public void btnZaladujStrone(ActionEvent actionEvent) {
+        if (selInfografika != null)
+            hostServices.showDocument(selInfografika.adresStrony);
     }
 }
